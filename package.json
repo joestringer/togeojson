@@ -7,17 +7,18 @@
     "test": "test"
   },
   "scripts": {
-    "test": "eslint togeojson.js && tape test/*.js",
-    "cov": "istanbul cover test/index.js && coveralls < ./coverage/lcov.info",
+    "lint": "eslint togeojson.js",
+    "test": "tape test/*.js",
+    "cov": "nyc npm run test && coveralls < ./coverage/lcov.info",
     "browser": "browserify -t brfs test/index.js > test/bundle.js"
   },
   "devDependencies": {
-    "brfs": "~1.4.3",
-    "coveralls": "~2.11.12",
-    "eslint": "^3.3.0",
+    "brfs": "~2.0.2",
+    "coveralls": "~3.1.0",
+    "eslint": "^7.3.1",
     "glob": "^7.0.5",
-    "istanbul": "~0.4.4",
-    "tape": "~4.6.0",
+    "nyc": "~15.1.0",
+    "tape": "~5.0.1",
     "xmldom": "0.3.0"
   },
   "repository": {
