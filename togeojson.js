@@ -14,7 +14,6 @@ toGeoJSON = (function() {
     // all Y children of X
     function get(x, y) { return x.getElementsByTagName(y); }
     function attr(x, y) { return x.getAttribute(y); }
-    function attrf(x, y) { return parseFloat(attr(x, y)); }
     // one Y child of X, if any, otherwise null
     function get1(x, y) { var n = get(x, y); return n.length ? n[0] : null; }
     // https://developer.mozilla.org/en-US/docs/Web/API/Node.normalize
@@ -22,11 +21,6 @@ toGeoJSON = (function() {
     // cast array x into numbers
     function numarray(x) {
         for (var j = 0, o = []; j < x.length; j++) o[j] = parseFloat(x[j]);
-        return o;
-    }
-    function clean(x) {
-        var o = {};
-        for (var i in x) if (x[i]) o[i] = x[i];
         return o;
     }
     // get the content of a text node, if any
@@ -44,12 +38,6 @@ toGeoJSON = (function() {
             o.push(coord1(coords[i]));
         }
         return o;
-    }
-    function coordPair(x) {
-        var ll = [attrf(x, 'lon'), attrf(x, 'lat')],
-            ele = get1(x, 'ele');
-        if (ele) ll.push(parseFloat(nodeVal(ele)));
-        return ll;
     }
 
     // create a new feature collection parent object
@@ -209,77 +197,6 @@ toGeoJSON = (function() {
                     },
                     properties: properties
                 }];
-            }
-            return gj;
-        },
-        gpx: function(doc, o) {
-            var i,
-                tracks = get(doc, 'trk'),
-                routes = get(doc, 'rte'),
-                waypoints = get(doc, 'wpt'),
-                // a feature collection
-                gj = fc();
-            for (i = 0; i < tracks.length; i++) {
-                gj.features.push(getTrack(tracks[i]));
-            }
-            for (i = 0; i < routes.length; i++) {
-                gj.features.push(getRoute(routes[i]));
-            }
-            for (i = 0; i < waypoints.length; i++) {
-                gj.features.push(getPoint(waypoints[i]));
-            }
-            function getPoints(node, pointname) {
-                var pts = get(node, pointname), line = [];
-                for (var i = 0; i < pts.length; i++) {
-                    line.push(coordPair(pts[i]));
-                }
-                return line;
-            }
-            function getTrack(node) {
-                var segments = get(node, 'trkseg'), track = [];
-                for (var i = 0; i < segments.length; i++) {
-                    track.push(getPoints(segments[i], 'trkpt'));
-                }
-                return {
-                    type: 'Feature',
-                    properties: getProperties(node),
-                    geometry: {
-                        type: track.length === 1 ? 'LineString' : 'MultiLineString',
-                        coordinates: track.length === 1 ? track[0] : track
-                    }
-                };
-            }
-            function getRoute(node) {
-                return {
-                    type: 'Feature',
-                    properties: getProperties(node),
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: getPoints(node, 'rtept')
-                    }
-                };
-            }
-            function getPoint(node) {
-                var prop = getProperties(node);
-                prop.sym = nodeVal(get1(node, 'sym'));
-                return {
-                    type: 'Feature',
-                    properties: prop,
-                    geometry: {
-                        type: 'Point',
-                        coordinates: coordPair(node)
-                    }
-                };
-            }
-            function getProperties(node) {
-                var meta = ['name', 'desc', 'author', 'copyright', 'link',
-                            'time', 'keywords'],
-                    prop = {},
-                    k;
-                for (k = 0; k < meta.length; k++) {
-                    prop[meta[k]] = nodeVal(get1(node, meta[k]));
-                }
-                return clean(prop);
             }
             return gj;
         }

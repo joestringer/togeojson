@@ -2,9 +2,8 @@
 [![Coverage status](https://img.shields.io/coveralls/mapbox/togeojson.svg "Coverage status")](https://coveralls.io/r/mapbox/togeojson)
 [![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
 
-# Convert KML and GPX to GeoJSON.
-
-This converts [KML](https://developers.google.com/kml/documentation/) & [GPX](http://www.topografix.com/gpx.asp)
+# Convert KML to GeoJSON.
+This converts [KML](https://developers.google.com/kml/documentation/)
 to [GeoJSON](http://www.geojson.org/), in a browser or with [Node.js](http://nodejs.org/).
 
 * [x] Dependency-free
@@ -26,15 +25,6 @@ holding an XML DOM.
 The output is a Javascript object of GeoJSON data. You can convert it to a string
 with [JSON.stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
 or use it directly in libraries like [mapbox.js](http://www.mapbox.com/mapbox.js/).
-
-### `toGeoJSON.gpx(doc)`
-
-Convert a GPX document to GeoJSON. The first argument, `doc`, must be a GPX
-document as an XML DOM - not as a string. You can get this using jQuery's default
-`.ajax` function or using a bare XMLHttpRequest with the `.response` property
-holding an XML DOM.
-
-The output is a Javascript object of GeoJSON data, same as `.kml` outputs.
 
 ## Node.js
 
@@ -89,14 +79,6 @@ just AJAX.
 * [x] [TimeStamp](https://developers.google.com/kml/documentation/kmlreference#timestamp)
 * [ ] NetworkLinks
 * [ ] GroundOverlays
-
-### GPX Feature Support
-
-* [x] Line Paths
-* [x] Line styles
-* [ ] Properties
-  * [x] 'name', 'cmt', 'desc', 'link', 'time', 'keywords', 'sym', 'type' tags
-  * [ ] 'author', 'copyright' tags
 
 ## FAQ
 
