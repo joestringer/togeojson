@@ -36,14 +36,6 @@ holding an XML DOM.
 
 The output is a Javascript object of GeoJSON data, same as `.kml` outputs.
 
-## CLI
-
-Install it into your path with `npm install -g togeojson`.
-
-```
-~> togeojson file.kml > file.geojson
-```
-
 ## Node.js
 
 Install it into your project with `npm install --save togeojson`.

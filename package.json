@@ -17,10 +17,8 @@
     "eslint": "^3.3.0",
     "glob": "^7.0.5",
     "istanbul": "~0.4.4",
-    "tape": "~4.6.0"
-  },
-  "bin": {
-    "togeojson": "togeojson"
+    "tape": "~4.6.0",
+    "xmldom": "0.3.0"
   },
   "repository": {
     "type": "git",
@@ -35,11 +33,6 @@
     ]
   },
   "license": "BSD-2-Clause",
-  "dependencies": {
-    "xmldom": "~0.1.19",
-    "concat-stream": "~1.5.1",
-    "minimist": "1.2.0"
-  },
   "keywords": [
     "kml",
     "geojson",
