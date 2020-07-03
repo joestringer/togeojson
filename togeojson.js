@@ -48,14 +48,19 @@ toGeoJSON = (function() {
         };
     }
 
-    var serializer;
-    if (typeof XMLSerializer !== 'undefined') {
-        serializer = new XMLSerializer();
-    // only require xmldom in a node environment
-    } else if (typeof exports === 'object' && typeof process === 'object' && !process.browser) {
-        serializer = new (require('xmldom').XMLSerializer)();
+    function xml2str(node) {
+        if (node.xml !== undefined) return node.xml;
+        if (node.tagName) {
+            let output = node.tagName;
+            for (let i = 0; i < node.attributes.length; i++) {
+                output += node.attributes[i].name + node.attributes[i].value;
+            }
+            for (let i = 0; i < node.childNodes.length; i++) {
+                output += xml2str(node.childNodes[i]);
+            }
+            return output;
+        }
     }
-    function xml2str(str) { return serializer.serializeToString(str); }
 
     var t = {
         kml: function(doc, o) {
