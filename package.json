@@ -40,7 +40,6 @@
     "parser",
     "formatter",
     "input",
-    "leaflet",
     "maps"
   ]
 }

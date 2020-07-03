@@ -1,8 +1,5 @@
-[![Build status](https://img.shields.io/travis/mapbox/togeojson.svg "Build status")](http://travis-ci.org/mapbox/togeojson)
-[![Coverage status](https://img.shields.io/coveralls/mapbox/togeojson.svg "Coverage status")](https://coveralls.io/r/mapbox/togeojson)
-[![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
-
 # Convert KML to GeoJSON.
+
 This converts [KML](https://developers.google.com/kml/documentation/)
 to [GeoJSON](http://www.geojson.org/), in a browser or with [Node.js](http://nodejs.org/).
 
@@ -10,8 +7,13 @@ to [GeoJSON](http://www.geojson.org/), in a browser or with [Node.js](http://nod
 * [x] Tiny
 * [x] Tested
 * [x] Node.js + Browsers
+* [x] Rhino
 
-Want to use this with [Leaflet](http://leafletjs.com/)? Try [leaflet-omnivore](https://github.com/mapbox/leaflet-omnivore)!
+The upstream, well-maintained version is at https://github.com/tmcw/togeojson.
+If you're considering using this library, you probably should use that one
+instead. This version is based on an older branch with simpler javascript
+language dependencies, specifically prepared to be compatible on
+[Rhino](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino).
 
 ## API
 
@@ -44,25 +46,6 @@ var converted = tj.kml(kml);
 
 var convertedWithStyles = tj.kml(kml, { styles: true });
 ```
-
-## Browser
-
-Download it into your project like
-
-    wget https://raw.github.com/tmcw/togeojson/gh-pages/togeojson.js
-
-```html
-<script src='jquery.js'></script>
-<script src='togeojson.js'></script>
-<script>
-$.ajax('test/data/linestring.kml').done(function(xml) {
-    console.log(toGeoJSON.kml(xml));
-});
-</script>
-```
-
-toGeoJSON doesn't include AJAX - you can use [jQuery](http://jquery.com/) for
-just AJAX.
 
 ### KML Feature Support
 
