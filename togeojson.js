@@ -1,4 +1,4 @@
-toGeoJSON = (function() {
+var toGeoJSON = (function() {
     'use strict';
 
     var removeSpace = (/\s*/g),
@@ -9,27 +9,47 @@ toGeoJSON = (function() {
         if (!x || !x.length) return 0;
         for (var i = 0, h = 0; i < x.length; i++) {
             h = ((h << 5) - h) + x.charCodeAt(i) | 0;
-        } return h;
+        }
+        return h;
     }
     // all Y children of X
-    function get(x, y) { return x.getElementsByTagName(y); }
-    function attr(x, y) { return x.getAttribute(y); }
+    function get(x, y) {
+        return x.getElementsByTagName(y);
+    }
+
+    function attr(x, y) {
+        return x.getAttribute(y);
+    }
+
     // one Y child of X, if any, otherwise null
-    function get1(x, y) { var n = get(x, y); return n.length ? n[0] : null; }
+    function get1(x, y) {
+        var n = get(x, y);
+        return n.length ? n[0] : null;
+    }
     // https://developer.mozilla.org/en-US/docs/Web/API/Node.normalize
-    function norm(el) { if (el.normalize) { el.normalize(); } return el; }
+    function norm(el) {
+        if (el.normalize) {
+            el.normalize();
+        }
+        return el;
+    }
     // cast array x into numbers
     function numarray(x) {
         for (var j = 0, o = []; j < x.length; j++) o[j] = parseFloat(x[j]);
         return o;
     }
+
     // get the content of a text node, if any
     function nodeVal(x) {
-        if (x) { norm(x); }
+        if (x) {
+            norm(x);
+        }
         return (x && x.firstChild && x.firstChild.nodeValue) || '';
     }
     // get one coordinate from a coordinate array, if any
-    function coord1(v) { return numarray(v.replace(removeSpace, '').split(',')); }
+    function coord1(v) {
+        return numarray(v.replace(removeSpace, '').split(','));
+    }
     // get all coordinates from a coordinate array as [[],[]]
     function coord(v) {
         var coords = v.replace(trimSpace, '').split(splitSpace),
@@ -51,21 +71,19 @@ toGeoJSON = (function() {
     function xml2str(node) {
         if (node.xml !== undefined) return node.xml;
         if (node.tagName) {
-            let output = node.tagName;
-            for (let i = 0; i < node.attributes.length; i++) {
+            var output = node.tagName;
+            for (var i = 0; i < node.attributes.length; i++) {
                 output += node.attributes[i].name + node.attributes[i].value;
             }
-            for (let i = 0; i < node.childNodes.length; i++) {
-                output += xml2str(node.childNodes[i]);
+            for (var j = 0; j < node.childNodes.length; j++) {
+                output += xml2str(node.childNodes[j]);
             }
             return output;
         }
     }
 
     var t = {
-        kml: function(doc, o) {
-            o = o || {};
-
+        kml: function(doc) {
             var gj = fc(),
                 // styleindex keeps track of hashed styles in order to match features
                 styleIndex = {},
@@ -82,10 +100,11 @@ toGeoJSON = (function() {
             for (var j = 0; j < placemarks.length; j++) {
                 gj.features = gj.features.concat(getPlacemark(placemarks[j]));
             }
+
             function kmlColor(v) {
                 var color, opacity;
-                v = v || "";
-                if (v.substr(0, 1) === "#") v = v.substr(1);
+                v = v || '';
+                if (v.substr(0, 1) === '#') v = v.substr(1);
                 if (v.length === 6 || v.length === 3) color = v;
                 if (v.length === 8) {
                     opacity = parseInt(v.substr(0, 2), 16) / 255;
@@ -93,12 +112,18 @@ toGeoJSON = (function() {
                 }
                 return [color, isNaN(opacity) ? undefined : opacity];
             }
-            function gxCoord(v) { return numarray(v.split(' ')); }
+
+            function gxCoord(v) {
+                return numarray(v.split(' '));
+            }
+
             function gxCoords(root) {
-                var elems = get(root, 'coord', 'gx'), coords = [];
+                var elems = get(root, 'coord', 'gx'),
+                    coords = [];
                 for (var i = 0; i < elems.length; i++) coords.push(gxCoord(nodeVal(elems[i])));
                 return coords;
             }
+
             function getGeometry(root) {
                 var geomNode, geomNodes, i, j, k, geoms = [];
                 if (get1(root, 'MultiGeometry')) return getGeometry(get1(root, 'MultiGeometry'));
@@ -139,8 +164,10 @@ toGeoJSON = (function() {
                 }
                 return geoms;
             }
+
             function getPlacemark(root) {
-                var geoms = getGeometry(root), i, properties = {},
+                var geoms = getGeometry(root),
+                    i, properties = {},
                     name = nodeVal(get1(root, 'name')),
                     address = nodeVal(get1(root, 'address')),
                     styleUrl = nodeVal(get1(root, 'styleUrl')),
@@ -161,7 +188,10 @@ toGeoJSON = (function() {
                 if (timeSpan) {
                     var begin = nodeVal(get1(timeSpan, 'begin'));
                     var end = nodeVal(get1(timeSpan, 'end'));
-                    properties.timespan = { begin: begin, end: end };
+                    properties.timespan = {
+                        begin: begin,
+                        end: end
+                    };
                 }
                 if (lineStyle) {
                     var linestyles = kmlColor(nodeVal(get1(lineStyle, 'color'))),
@@ -180,8 +210,8 @@ toGeoJSON = (function() {
                         outline = nodeVal(get1(polyStyle, 'outline'));
                     if (pcolor) properties.fill = pcolor;
                     if (!isNaN(popacity)) properties['fill-opacity'] = popacity;
-                    if (fill) properties['fill-opacity'] = fill === "1" ? 1 : 0;
-                    if (outline) properties['stroke-opacity'] = outline === "1" ? 1 : 0;
+                    if (fill) properties['fill-opacity'] = fill === '1' ? 1 : 0;
+                    if (outline) properties['stroke-opacity'] = outline === '1' ? 1 : 0;
                 }
                 if (extendedData) {
                     var datas = get(extendedData, 'Data'),
@@ -209,4 +239,4 @@ toGeoJSON = (function() {
     return t;
 })();
 
-if (typeof module !== 'undefined') module.exports = toGeoJSON;
+module.exports = toGeoJSON;
